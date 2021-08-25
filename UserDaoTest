@@ -1,0 +1,78 @@
+package com.slime.dao;
+
+import com.slime.pojo.User;
+import com.slime.utils.MybatisUtils;
+import org.apache.ibatis.session.SqlSession;
+import org.junit.Test;
+
+import java.util.List;
+
+public class UserDaoTest {
+    @Test
+    public void test(){
+        // 第一步：获得sqlSession对象
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+        // 执行SQL
+//        UserDao userDao = sqlSession.getMapper(UserDao.class);
+//        List<User> userList = userDao.getUserList();
+
+        // 方式二
+        List<User> userList = sqlSession.selectList("com.slime.dao.UserDao.getUserList");
+
+        for (User user : userList) {
+            System.out.println(user);
+        }
+
+        // 关闭SqlSession
+        sqlSession.close();
+    }
+    @Test
+    public void getUserById(){
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+
+        UserDao mapper = sqlSession.getMapper(UserDao.class);
+        User user = mapper.getUserById(1);
+        System.out.println(user);
+
+        sqlSession.close();
+    }
+    // 增删改必须提交事务
+    @Test
+    public void addUser(){
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+
+        User user = new User(4, "赵四", "159753");
+        UserDao mapper = sqlSession.getMapper(UserDao.class);
+        int i = mapper.addUser(user);
+        System.out.println(i);
+
+        sqlSession.commit();
+        sqlSession.close();
+    }
+    @Test
+    public void updateUser(){
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+
+        UserDao mapper = sqlSession.getMapper(UserDao.class);
+        int i = mapper.updateUser(new User(1, "slime", "123456"));
+        if(i>0){
+            System.out.println("修改成功");
+        }
+
+        sqlSession.commit();
+        sqlSession.close();
+    }
+    @Test
+    public void deleteUser(){
+        SqlSession sqlSession = MybatisUtils.getSqlSession();
+
+        UserDao mapper = sqlSession.getMapper(UserDao.class);
+        int i = mapper.deleteUser(4);
+        if(i>0){
+            System.out.println("删除成功");
+        }
+
+        sqlSession.commit();
+        sqlSession.close();
+    }
+}
