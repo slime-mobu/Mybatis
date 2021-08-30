@@ -1,0 +1,8 @@
+package com.slime.dao;
+
+import com.slime.pojo.Blog;
+
+public interface BlogMapper {
+    // 插入数据
+    int addBlog(Blog blog);
+}
